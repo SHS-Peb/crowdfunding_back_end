@@ -3,10 +3,13 @@ Shannon Lowe
 
 ## Planning:
 ### Concept/Name
-{{ Include a short description of your website concept here. }}
+The I Just Need One Thing Fund
+A fundraising program that you can only use once. What is the one thing you need to get your life together?
+A new office chair? A plane ticket to get away? A new Mattress? A gym membership for a year?
+Each idea would have to be verified manually before being allowed.
 
 ### Intended Audience/User Stories
-{{ Who are your intended audience? How will they use the website? }}
+People who just need a one chance to change their daily lives in a simple way
 
 ### Front End Pages/Functionality
 - {{ A page on the front end }}
@@ -30,3 +33,4 @@ It can be helpful to keep the markdown preview open in VS Code so that you can s
 
 ### DB Schema
 ![]( {{ ./relative/path/to/your/schema/image.png }} )
+
