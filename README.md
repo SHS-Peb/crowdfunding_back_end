@@ -27,9 +27,17 @@ It might look messy here in the PDF, but once it's rendered it looks very neat!
 
 It can be helpful to keep the markdown preview open in VS Code so that you can see what you're typing more easily. }}
 
-| URL | HTTP Method | Purpose | Request Body | Success Response Code | Authentication/Authorisation |
-| --- | ----------- | ------- | ------------ | --------------------- | ---------------------------- |
-|     |             |         |              |                       |                              |
+| URL | HTTP Method | Purpose | Request Body | Success Response Code | Authentication |
+|----|------------|--------|--------------|----------------------|----------------|
+| `/users/` | POST | Create a new user account | username, email, password | 201 Created | None |
+| `/users/` | GET | Get all users | None | 200 OK | None |
+| `/users/<id>/` | GET | Get a specific user | None | 200 OK | None |
+| `/fundraisers/` | POST | Create a new fundraiser | title, description, goal, image, is_open | 201 Created | Token |
+| `/fundraisers/` | GET | Get all fundraisers | None | 200 OK | None |
+| `/fundraisers/<id>/` | GET | Get a specific fundraiser | None | 200 OK | None |
+| `/pledges/` | POST | Create a pledge | amount, comment, anonymous, fundraiser | 201 Created | Token |
+| `/pledges/` | GET | Get all pledges | None | 200 OK | None |
+| `/api-token-auth/` | POST | Obtain authentication token | username, password | 200 OK | None |
 
 ### DB Schema
 ![]( {{ ./relative/path/to/your/schema/image.png }} )
