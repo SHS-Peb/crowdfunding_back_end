@@ -2,20 +2,22 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.generics import get_object_or_404
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from .models import Fundraiser
 from .serializers import FundraiserSerializer
 from .models import Fundraiser, Pledge
 from .serializers import FundraiserSerializer, PledgeSerializer, FundraiserDetailSerializer
 
 class FundraiserList(APIView):
-
-   def get(self, request):
+    permission_classes = [IsAuthenticatedOrReadOnly]
+    
+    def get(self, request):
        fundraisers = Fundraiser.objects.all()
        serializer = FundraiserSerializer(fundraisers, many=True)
        return Response(serializer.data)
    
-   def post(self, request):
-       serializer = FundraiserSerializer(data=request.data)
+    def post(self, request):
+       serializer = FundraiserSerializer(data=request.data, context={"request": request})
        if serializer.is_valid():
            serializer.save(owner=request.user)
            return Response(
@@ -34,13 +36,14 @@ class FundraiserDetail(APIView):
        return Response(serializer.data)
    
 class PledgeList(APIView):
-
-   def get(self, request):
+    permission_classes = [IsAuthenticatedOrReadOnly]
+    
+    def get(self, request):
       pledges = Pledge.objects.all()
       serializer = PledgeSerializer(pledges, many=True)
       return Response(serializer.data)
 
-   def post(self, request):
+    def post(self, request):
        serializer = PledgeSerializer(data=request.data)
        if serializer.is_valid():
            serializer.save()
