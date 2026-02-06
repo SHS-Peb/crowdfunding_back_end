@@ -30,10 +30,40 @@ class FundraiserList(APIView):
        )
    
 class FundraiserDetail(APIView):
-   def get(self, request, pk):
+    def get(self, request, pk):
        fundraiser = get_object_or_404(Fundraiser, pk=pk)
        serializer = FundraiserDetailSerializer(fundraiser)
        return Response(serializer.data)
+
+    def patch(self, request, pk):
+        fundraiser = get_object_or_404(Fundraiser, pk=pk)
+
+        if fundraiser.owner != request.user:
+            return Response(status=status.HTTP_403_FORBIDDEN)
+
+        serializer = FundraiserSerializer(
+            fundraiser,
+            data=request.data,
+            partial=True,
+            context={"request": request}
+        )
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, pk):
+        fundraiser = get_object_or_404(Fundraiser, pk=pk)
+
+        if fundraiser.owner != request.user:
+            return Response(status=status.HTTP_403_FORBIDDEN)
+
+        fundraiser.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+   
    
 class PledgeList(APIView):
     permission_classes = [IsAuthenticatedOrReadOnly]

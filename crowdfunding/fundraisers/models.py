@@ -2,6 +2,18 @@ from django.db import models
 from django.contrib.auth import get_user_model
 
 class Fundraiser(models.Model):
+    STATUS_CHOICES = [
+        ("PENDING", "Pending"),
+        ("APPROVED", "Approved"),
+        ("REJECTED", "Rejected"),
+    ]
+
+    status = models.CharField(
+        max_length=10,
+        choices=STATUS_CHOICES,
+        default="PENDING"
+    )
+
     title = models.CharField(max_length=200)
     description = models.TextField()
     goal = models.IntegerField()
