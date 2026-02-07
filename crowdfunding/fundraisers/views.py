@@ -74,9 +74,9 @@ class PledgeList(APIView):
       return Response(serializer.data)
 
     def post(self, request):
-       serializer = PledgeSerializer(data=request.data)
+       serializer = PledgeSerializer(data=request.data, context={"request": request})
        if serializer.is_valid():
-           serializer.save()
+           serializer.save(supporter=request.user)
            return Response(
              serializer.data,
               status=status.HTTP_201_CREATED
@@ -85,3 +85,15 @@ class PledgeList(APIView):
           serializer.errors,
           status=status.HTTP_400_BAD_REQUEST
       )
+    
+class PledgeDetail(APIView):
+    permission_classes = [IsAuthenticatedOrReadOnly]
+
+    def delete(self, request, pk):
+        pledge = get_object_or_404(Pledge, pk=pk)
+
+        if pledge.supporter != request.user:
+            return Response(status=status.HTTP_403_FORBIDDEN)
+
+        pledge.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)

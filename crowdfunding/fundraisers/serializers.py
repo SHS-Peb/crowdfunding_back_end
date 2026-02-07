@@ -27,9 +27,29 @@ class FundraiserSerializer(serializers.ModelSerializer):
 
 
 class PledgeSerializer(serializers.ModelSerializer):
+  supporter = serializers.ReadOnlyField(source="supporter.id")
+  
   class Meta:
      model = apps.get_model('fundraisers.Pledge')
      fields = '__all__'
+
+  def validate(self, attrs):
+    fundraiser = attrs.get("fundraiser")
+
+    if fundraiser is None:
+        return attrs
+
+    if fundraiser.status != "APPROVED":
+        raise serializers.ValidationError({
+            "detail": "This fundraiser has not been approved yet."
+        })
+
+    if not fundraiser.is_open:
+        raise serializers.ValidationError({
+            "detail": "This fundraiser is closed for pledges."
+        })
+
+    return attrs
 
 class FundraiserDetailSerializer(FundraiserSerializer):
    pledges = PledgeSerializer(many=True, read_only=True)
