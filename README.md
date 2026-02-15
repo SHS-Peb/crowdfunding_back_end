@@ -109,4 +109,48 @@ Below is proof that each endpoint works correctly, including authentication, per
 
 
 
+### Backend API
+https://crowdfunding-ijustneedonething-06a0f674c900.herokuapp.com/
 
+
+###  How to Register a New User + Create a Fundraiser (Step-by-step)
+
+> Base URL (local): `http://127.0.0.1:8000`
+
+#### 1 Register a new user
+**Endpoint:** `POST /users/`  
+**Auth:** None  
+**Body (JSON):**
+```json
+{
+  "username": "Tester1",
+  "email": "testuser@example.com",
+  "password": "password123"
+}
+```
+
+#### 2 Obtain an Authentication Token
+**Endpoint:** `POST /api-token-auth/`  
+**Auth:** None
+**Body (JSON):**
+```json
+{
+  "username": "Tester1",
+  "password": "_ENTER_USERPASS"
+}
+```
+
+#### 3 Create a New Fundraiser
+**Endpoint:** `POST /fundraisers/`  
+**Auth:** Token (Bearer)
+**Body (JSON):**
+```json
+
+{
+  "title": "Tester1 fundraiser",
+  "description": "Tester1 this is just blah blah blah gimme monies",
+  "goal": 500,
+  "image": "https://h5p.org/sites/default/files/h5p/content/825/images/image-53e9e42b9ba63.jpg",
+  "is_open": true
+}
+```
