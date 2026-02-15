@@ -12,18 +12,33 @@ class FundraiserSerializer(serializers.ModelSerializer):
 
   def validate(self, attrs):
     request = self.context.get("request")
+
     if request is None or request.user.is_anonymous:
-      return attrs
-    
+        return attrs
+
+    # Only admins can change status
+    if "status" in attrs and not request.user.is_staff:
+        raise serializers.ValidationError({
+            "status": "Only administrators can change fundraiser status."
+        })
+
+    # One fundraiser at a time rule
     has_active_or_pending = Fundraiser.objects.filter(
-      owner=request.user
+        owner=request.user
     ).exclude(
-      status="REJECTED"
+        status="REJECTED"
     ).exists()
 
-    if has_active_or_pending:
-      raise serializers.ValidationError({"detail": "You already have a fundraiser pending or approved. You can only resubmit if it is rejected."})
+    if has_active_or_pending and self.instance is None:
+        raise serializers.ValidationError({
+            "detail": (
+                "You already have a fundraiser pending or approved. "
+                "You can only resubmit if it is rejected."
+            )
+        })
+
     return attrs
+
 
 
 class PledgeSerializer(serializers.ModelSerializer):

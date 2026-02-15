@@ -38,7 +38,8 @@ class FundraiserDetail(APIView):
     def patch(self, request, pk):
         fundraiser = get_object_or_404(Fundraiser, pk=pk)
 
-        if fundraiser.owner != request.user:
+    # allow owner OR admin/staff
+        if fundraiser.owner != request.user and not request.user.is_staff:
             return Response(status=status.HTTP_403_FORBIDDEN)
 
         serializer = FundraiserSerializer(
@@ -54,10 +55,12 @@ class FundraiserDetail(APIView):
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
     def delete(self, request, pk):
         fundraiser = get_object_or_404(Fundraiser, pk=pk)
 
-        if fundraiser.owner != request.user:
+    # allow owner OR admin/staff
+        if fundraiser.owner != request.user and not request.user.is_staff:
             return Response(status=status.HTTP_403_FORBIDDEN)
 
         fundraiser.delete()
