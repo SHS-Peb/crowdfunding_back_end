@@ -3,7 +3,12 @@ Shannon Lowe
 
 ## Planning:
 ### Concept/Name
-The I Just Need One Thing Fund
+My Shot Fund
+(I am not throwin' away my shot
+Ayo, I'm just like my country
+I'm young, scrappy and hungry
+And I'm not throwin' away my shot)
+
 A fundraising program that you can only use once. What is the one thing you need to get your life together?
 A new office chair? A plane ticket to get away? A new Mattress? A gym membership for a year?
 Each idea would have to be verified manually before being allowed.
