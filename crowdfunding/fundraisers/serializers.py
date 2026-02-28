@@ -3,68 +3,71 @@ from django.apps import apps
 
 Fundraiser = apps.get_model("fundraisers", "Fundraiser")
 
+
 class FundraiserSerializer(serializers.ModelSerializer):
-  owner = serializers.ReadOnlyField(source='owner.id')
-  
-  class Meta:
-      model = Fundraiser
-      fields = '__all__'
+    owner = serializers.ReadOnlyField(source="owner.id")
 
-  def validate(self, attrs):
-    request = self.context.get("request")
+    class Meta:
+        model = Fundraiser
+        fields = "__all__"
 
-    if request is None or request.user.is_anonymous:
-        return attrs
+    def validate(self, attrs):
+        request = self.context.get("request")
 
-    # Only admins can change status
-    if "status" in attrs and not request.user.is_staff:
-        raise serializers.ValidationError({
-            "status": "Only administrators can change fundraiser status."
-        })
+        if request is None or request.user.is_anonymous:
+            return attrs
 
-    # One fundraiser at a time rule
-    has_active_or_pending = Fundraiser.objects.filter(
-        owner=request.user
-    ).exclude(
-        status="REJECTED"
-    ).exists()
-
-    if has_active_or_pending and self.instance is None:
-        raise serializers.ValidationError({
-            "detail": (
-                "You already have a fundraiser pending or approved. "
-                "You can only resubmit if it is rejected."
+        # Only admins can change status
+        if "status" in attrs and not request.user.is_staff:
+            raise serializers.ValidationError(
+                {"status": "Only administrators can change fundraiser status."}
             )
-        })
 
-    return attrs
+        # One fundraiser at a time rule
+        has_active_or_pending = (
+            Fundraiser.objects.filter(owner=request.user)
+            .exclude(status="REJECTED")
+            .exists()
+        )
 
+        if has_active_or_pending and self.instance is None:
+            raise serializers.ValidationError(
+                {
+                    "detail": (
+                        "You already have a fundraiser pending or approved. "
+                        "You can only resubmit if it is rejected."
+                    )
+                }
+            )
+
+        return attrs
 
 
 class PledgeSerializer(serializers.ModelSerializer):
-  supporter = serializers.ReadOnlyField(source="supporter.id")
-  
-  class Meta:
-     model = apps.get_model('fundraisers.Pledge')
-     fields = '__all__'
+    supporter = serializers.ReadOnlyField(source="supporter.id")
 
-  def validate(self, attrs):
-    fundraiser = attrs.get("fundraiser")
+    class Meta:
+        model = apps.get_model("fundraisers.Pledge")
+        fields = "__all__"
 
-    if fundraiser is None:
+    def validate(self, attrs):
+        fundraiser = attrs.get("fundraiser")
+
+        if fundraiser is None:
+            return attrs
+
+        if fundraiser.status != "APPROVED":
+            raise serializers.ValidationError(
+                {"detail": "This fundraiser has not been approved yet."}
+            )
+
+        if not fundraiser.is_open:
+            raise serializers.ValidationError(
+                {"detail": "This fundraiser is closed for pledges."}
+            )
+
         return attrs
 
-    if fundraiser.status != "APPROVED":
-        raise serializers.ValidationError({
-            "detail": "This fundraiser has not been approved yet."
-        })
-
-    if not fundraiser.is_open:
-        raise serializers.ValidationError({
-            "detail": "This fundraiser is closed for pledges."
-        })
-
-    return attrs
 
 class FundraiserDetailSerializer(FundraiserSerializer):
-   pledges = PledgeSerializer(many=True, read_only=True)
+    pledges = PledgeSerializer(many=True, read_only=True)

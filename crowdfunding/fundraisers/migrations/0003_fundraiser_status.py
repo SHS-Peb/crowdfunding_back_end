@@ -6,13 +6,21 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('fundraisers', '0002_fundraiser_owner_pledge_supporter'),
+        ("fundraisers", "0002_fundraiser_owner_pledge_supporter"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='fundraiser',
-            name='status',
-            field=models.CharField(choices=[('PENDING', 'Pending'), ('APPROVED', 'Approved'), ('REJECTED', 'Rejected')], default='PENDING', max_length=10),
+            model_name="fundraiser",
+            name="status",
+            field=models.CharField(
+                choices=[
+                    ("PENDING", "Pending"),
+                    ("APPROVED", "Approved"),
+                    ("REJECTED", "Rejected"),
+                ],
+                default="PENDING",
+                max_length=10,
+            ),
         ),
     ]

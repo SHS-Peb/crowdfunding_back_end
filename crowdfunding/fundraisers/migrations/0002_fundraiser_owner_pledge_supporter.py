@@ -8,21 +8,31 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('fundraisers', '0001_initial'),
+        ("fundraisers", "0001_initial"),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='fundraiser',
-            name='owner',
-            field=models.ForeignKey(default=1, on_delete=django.db.models.deletion.CASCADE, related_name='owned_fundraisers', to=settings.AUTH_USER_MODEL),
+            model_name="fundraiser",
+            name="owner",
+            field=models.ForeignKey(
+                default=1,
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="owned_fundraisers",
+                to=settings.AUTH_USER_MODEL,
+            ),
             preserve_default=False,
         ),
         migrations.AddField(
-            model_name='pledge',
-            name='supporter',
-            field=models.ForeignKey(default=1, on_delete=django.db.models.deletion.CASCADE, related_name='pledges', to=settings.AUTH_USER_MODEL),
+            model_name="pledge",
+            name="supporter",
+            field=models.ForeignKey(
+                default=1,
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="pledges",
+                to=settings.AUTH_USER_MODEL,
+            ),
             preserve_default=False,
         ),
     ]

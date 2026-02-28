@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth import get_user_model
 
+
 class Fundraiser(models.Model):
     STATUS_CHOICES = [
         ("PENDING", "Pending"),
@@ -8,11 +9,7 @@ class Fundraiser(models.Model):
         ("REJECTED", "Rejected"),
     ]
 
-    status = models.CharField(
-        max_length=10,
-        choices=STATUS_CHOICES,
-        default="PENDING"
-    )
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default="PENDING")
 
     title = models.CharField(max_length=200)
     description = models.TextField()
@@ -22,22 +19,17 @@ class Fundraiser(models.Model):
     date_created = models.DateTimeField(auto_now_add=True)
 
     owner = models.ForeignKey(
-       get_user_model(),
-       on_delete=models.CASCADE,
-      related_name='owned_fundraisers'
-  )
+        get_user_model(), on_delete=models.CASCADE, related_name="owned_fundraisers"
+    )
+
 
 class Pledge(models.Model):
-   amount = models.IntegerField()
-   comment = models.CharField(max_length=200)
-   anonymous = models.BooleanField()
-   fundraiser = models.ForeignKey(
-       'Fundraiser',
-       on_delete=models.CASCADE,
-       related_name='pledges'
-   )
-   supporter = models.ForeignKey(
-       get_user_model(),
-       on_delete=models.CASCADE,
-       related_name='pledges'
-   )
+    amount = models.IntegerField()
+    comment = models.CharField(max_length=200)
+    anonymous = models.BooleanField()
+    fundraiser = models.ForeignKey(
+        "Fundraiser", on_delete=models.CASCADE, related_name="pledges"
+    )
+    supporter = models.ForeignKey(
+        get_user_model(), on_delete=models.CASCADE, related_name="pledges"
+    )
